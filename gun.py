@@ -122,12 +122,13 @@ class gun():
 
 
 class target():
-    self.points = 0
-    self.live = 1
+    def __init__():
+        self.points = 0
+        self.live = 1
     # FIXME: don't work!!! How to call this functions when object is created?
-    # self.id = canv.create_oval(0,0,0,0)
-    # self.id_points = canv.create_text(30,30,text = self.points,font = '28')
-    # self.new_target()
+        self.id = canv.create_oval(0,0,0,0)
+        self.id_points = canv.create_text(30,30,text = self.points,font = '28')
+        self.new_target()
 
     def new_target(self):
         """ Инициализация новой цели. """
