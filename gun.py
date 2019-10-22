@@ -52,8 +52,16 @@ class ball():
         и стен по краям окна (размер окна 800х600).
         """
         # FIXME
+        canv.delete(self.id)
         self.x += self.vx
         self.y -= self.vy
+        self.id = canv.create_oval(
+                self.x - self.r,
+                self.y - self.r,
+                self.x + self.r,
+                self.y + self.r,
+                fill=self.color
+        )
         self.vy += 1
         if (self.x - self.r <= 3 or self.x + self.r >= 797): self.vx = -self.vx
         if (self.y - self.r <= 3 or self.y + self.r >= 597): self.vy = -self.vy
