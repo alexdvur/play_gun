@@ -54,6 +54,9 @@ class ball():
         # FIXME
         self.x += self.vx
         self.y -= self.vy
+        self.vy += 1
+        if (self.x - self.r <= 3 or self.x + self.r >= 797): self.vx = -self.vx
+        if (self.y - self.r <= 3 or self.y + self.r >= 597): self.vy = -self.vy
 
     def hittest(self, obj):
         """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
@@ -64,14 +67,17 @@ class ball():
             Возвращает True в случае столкновения мяча и цели. В противном случае возвращает False.
         """
         # FIXME
-            return False
+        return False
+            
 
 
 class gun():
-    self.f2_power = 10
-    self.f2_on = 0
-    self.an = 1
-    # self.id = canv.create_line(20,450,50,420,width=7) # FIXME: don't know how to set it...
+    def __init__(self):
+        self.id = canv.create_line(20,450,50,420,width=7)
+        self.f2_power = 10
+        self.f2_on = 0
+        self.an = 1
+    # FIXME: don't know how to set it...
 
     def fire2_start(self, event):
         self.f2_on = 1
