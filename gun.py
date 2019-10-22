@@ -62,7 +62,7 @@ class ball():
                 self.y + self.r,
                 fill=self.color
         )
-        self.vy += 1
+        self.vy -= 1
         if (self.x - self.r <= 3 or self.x + self.r >= 797): self.vx = -self.vx
         if (self.y - self.r <= 3 or self.y + self.r >= 597): self.vy = -self.vy
 
@@ -75,7 +75,10 @@ class ball():
             Возвращает True в случае столкновения мяча и цели. В противном случае возвращает False.
         """
         # FIXME
-        return False
+        if ((self.x - obj.x)**2 + (self.y - obj.y)**2 <= (obj.r + self.r)**2):
+            return True
+        else:  
+            return False
             
 
 
