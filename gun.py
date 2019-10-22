@@ -122,7 +122,7 @@ class gun():
 
 
 class target():
-    def __init__():
+    def __init__(self):
         self.points = 0
         self.live = 1
     # FIXME: don't work!!! How to call this functions when object is created?
