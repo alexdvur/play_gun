@@ -51,7 +51,7 @@ class ball():
         self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
         и стен по краям окна (размер окна 800х600).
         """
-        # FIXME
+        global balls
         canv.delete(self.id)
         self.x += self.vx
         self.y -= self.vy
@@ -62,9 +62,23 @@ class ball():
                 self.y + self.r,
                 fill=self.color
         )
-        self.vy -= 1
-        if (self.x - self.r <= 3 or self.x + self.r >= 797): self.vx = -self.vx
-        if (self.y - self.r <= 3 or self.y + self.r >= 597): self.vy = -self.vy
+        self.vy -= 2
+        if (self.x - self.r <= 10): 
+            self.vx = -self.vx 
+            self.x = self.x + self.r + 10
+        if (self.x - self.r >= 790): 
+            self.vx = -self.vx 
+            self.x = self.x - self.r - 10
+        if (self.y - self.r <= 10): 
+            self.vy = -0.7 * self.vy
+            self.y = self.y + self.r + 10
+        if (self.y - self.r >= 590): 
+            self.vy = -0.7 * self.vy
+            self.y = self.y - self.r - 10
+        self.live -= 0.25
+        if self.live < 0:
+            canv.delete(self.id)
+            balls.remove(self)
 
     def hittest(self, obj):
         """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
@@ -195,4 +209,4 @@ def new_game(event=''):
 
 new_game()
 
-mainloop()
+root.mainloop()
