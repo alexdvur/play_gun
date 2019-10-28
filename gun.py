@@ -12,6 +12,9 @@ canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
 
 
+points_total = 0
+
+
 class ball():
     def __init__(self, x=40, y=450):
         """ Конструктор класса ball
@@ -150,9 +153,10 @@ class target():
     def __init__(self):
         self.points = 0
         self.live = 1
+        self.vx = rnd(-3, 3)
+        self.vy = rnd(-10,10)
     # FIXME: don't work!!! How to call this functions when object is created?
         self.id = canv.create_oval(0,0,0,0)
-        self.id_points = canv.create_text(30,30,text = self.points,font = '28')
         self.new_target()
 
     def new_target(self):
@@ -167,20 +171,53 @@ class target():
     def hit(self, points=1):
         """Попадание шарика в цель."""
         canv.coords(self.id, -10, -10, -10, -10)
-        self.points += points
-        canv.itemconfig(self.id_points, text=self.points)
+
+    def move_target(self):
+        if self.live == 1:
+            canv.delete(self.id)
+            self.x += self.vx
+            self.y -= self.vy
+            self.id = canv.create_oval(
+                self.x - self.r,
+                self.y - self.r,
+                self.x + self.r,
+                self.y + self.r,
+                fill=self.color
+            )
+            self.vy -= 2
+            if (self.x - self.r <= 610): 
+                self.vx = -self.vx 
+                self.x = self.x + self.r + 1
+            if (self.x - self.r >= 770): 
+                self.vx = -self.vx 
+                self.x = self.x - self.r - 1
+            if (self.y - self.r <= 310): 
+                self.vy = -0.7 * self.vy
+                self.y = self.y + self.r + 1
+            if (self.y - self.r >= 540): 
+                self.vy = -0.7 * self.vy
+                self.y = self.y - self.r - 1
+        else: 
+            pass
+
 
 
 t1 = target()
+t2 = target()
 screen1 = canv.create_text(400, 300, text='', font='28')
 g1 = gun()
 bullet = 0
 balls = []
 
 
+def points_on_screen():
+    global points_total, k
+    canv.itemconfig(k, text = points_total)
+
 def new_game(event=''):
-    global gun, t1, screen1, balls, bullet
+    global gun, t1, t2, screen1, balls, bullet, points_total
     t1.new_target()
+    t2.new_target()
     bullet = 0
     balls = []
     canv.bind('<Button-1>', g1.fire2_start)
@@ -189,24 +226,46 @@ def new_game(event=''):
 
     z = 0.03
     t1.live = 1
-    while t1.live or balls:
+    t2.live = 1
+    while t1.live or balls or t2.live:
+        t1.move_target()
+        t2.move_target()
         for b in balls:
             b.move()
-            if b.hittest(t1) and t1.live:
+            if b.hittest(t1) and t1.live and t2.live:
                 t1.live = 0
+                t1.hit()
+            if b.hittest(t2) and t2.live and t1.live:
+                t2.live = 0
+                t2.hit()
+            if b.hittest(t2) and t2.live and t1.live == 0:
+                t1.live = 0
+                t2.live = 0
+                t2.hit()
                 t1.hit()
                 canv.bind('<Button-1>', '')
                 canv.bind('<ButtonRelease-1>', '')
-                canv.itemconfig(screen1, text='Вы уничтожили цель за ' + str(bullet) + ' выстрелов')
+                canv.itemconfig(screen1, text='Вы уничтожили обе цели за ' + str(bullet) + ' выстрелов')
+            if b.hittest(t1) and t1.live and t2.live == 0:
+                t1.live = 0
+                t2.live = 0
+                t2.hit()
+                t1.hit()
+                canv.bind('<Button-1>', '')
+                canv.bind('<ButtonRelease-1>', '')
+                canv.itemconfig(screen1, text='Вы уничтожили обе цели за ' + str(bullet) + ' выстрелов')
         canv.update()
         time.sleep(0.03)
         g1.targetting()
         g1.power_up()
     canv.itemconfig(screen1, text='')
+    points_total += 1
+    points_on_screen()
     canv.delete(gun)
     root.after(750, new_game)
 
 
+k = canv.create_text(30,30,text = points_total,font = '28')
 new_game()
 
 root.mainloop()
